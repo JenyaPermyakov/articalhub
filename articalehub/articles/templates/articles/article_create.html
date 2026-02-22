@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>adding article</title>
+</head>
+<body>
+
+    <form method="POST">
+        {% csrf_token %}
+        <label>
+            Загаловок
+            <input type="text" name="title">
+        </label>
+        <br>
+        <label>
+            Текст статьи:
+            <textarea name="content"></textarea>
+        </label>
+        <br>
+        <br>
+        <button type="submit">send</button>
+    </form>
+
+</body>
+</html>
