@@ -12,7 +12,7 @@ class Article(models.Model):
     content = models.TextField()
     created_at = models.DateTimeField(auto_now_add=True)
     is_published = models.BooleanField(default=False)
-    author = models.ForeignKey(Author, on_delete=models.CASCADE, related_name='articles', to=articles)
+    author = models.ForeignKey(Author, on_delete=models.CASCADE, related_name='articles')
 
     def __str__(self):
         return self.title

@@ -26,9 +26,6 @@ def author_detail(request, author_id):
 
 def article_create(request):
     request_post = request.POST
-    # request_get = request.GET
-    # print(request_get)
-    # print(request_post)
     if request.method == "POST":
         title = request_post.get('title')
         content = request_post.get('content')
