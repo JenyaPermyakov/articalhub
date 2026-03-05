@@ -1,24 +1,32 @@
-<!doctype html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport"
-          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Список статей</title>
-</head>
-<body>
-    переход был из {{ search_query }}
-    <header>
-        <h1>Платформа статей</h1>
-    </header>
-    <main>
-        <h2>Список статей</h2>
-        <p>Здесь будут отображены статьи</p>
-    </main>
-    <footer>
-        <p>&copy; 2026 ArticleHub</p>
+{% extends 'articles/base.html' %}
 
-    </footer>
-</body>
-</html>
+{% block title %}ArticleHub - Статьи{% endblock %}
+
+{% block content %}
+    <h1>Последние статьи</h1>
+
+    <form method="get" class="mb-4">
+        <input type="text" name="q" class="from-control" placeholder="поиск по заголовку" value="{{ query|default:'' }}">
+    </form>
+
+    {% if articles %}
+
+        {% for article in articles %}
+            <div class="md-4 pb-4 border-bottom">
+                <h2 class="h4">{{ article.title }}</h2>
+                <p class="text-muted">
+                    {{ article.content|truncatechars:150 }}
+                </p>
+
+                <a href="{% url 'article_detail' article.id %}" class="text-decoration-none">
+                    Читать больше...->
+                </a>
+            </div>
+        {% endfor %}
+
+    {% else %}
+        <p class="text-muted">Статей пока нет</p>
+    {% endif %}
+
+{% endblock %}
+

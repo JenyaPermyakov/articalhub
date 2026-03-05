@@ -1,35 +1,77 @@
-from django.shortcuts import render
-from django.http import HttpResponse
-from django.http import Http404
-# from django import get_object_or_404
+from idlelib import query
+
+from django.contrib.auth.decorators import login_required
+from django.shortcuts import render, redirect, get_object_or_404
+
+from .forms import ArticleModelForm
+from .models import Author, Article
+
+from django.contrib.auth.models import User
+
+
+@login_required
+def article_create(request):
+
+    if request.method == 'POST':
+        form = ArticleModelForm(request.POST)
+        if form.is_valid():
+            article = form.save(commit=False)
+            article.author = request.user
+
+            article.save()
+            form.save_m2m()
+
+            return redirect('article_list')
+
+    else:
+        form = ArticleModelForm()
+
+    return render(request, 'articles/article_create.html', {'form': form, 'title': 'создать статью'})
+
 
 def article_list(request):
-    search_query = request.GET.get('search')
-    context = {
-        'search_query': search_query,
-    }
-    return render(request,'articles/article_list.html', context)
+    query = request.GET.get('q')
 
-def article_detail(request, artical_id):
-    if artical_id == 1:
-        return HttpResponse(f"это страница с айди {artical_id}")
+    articles = Article.objects.all()
+    if query:
+        articles = articles.filter(title__icontains=query)
 
-    raise Http404(f"statya not found {artical_id}")
+    return render(request, 'articles/article_list.html', {'articles': articles})
 
-def author_detail(request, author_id):
-    search_query = request.GET.get('search')
-    context = {
-        'search_query': search_query,
-    }
 
-    return HttpResponse(f" это страница автора {author_id}")
+def article_detail(request, pk):
+    article = get_object_or_404(Article, id=pk)
 
-def article_create(request):
-    request_post = request.POST
-    if request.method == "POST":
-        title = request_post.get('title')
-        content = request_post.get('content')
-        return HttpResponse(f"poluchena statya{title}")
+    return render(
+        request,
+        'articles/article_details.html',
+        context={'article': article}
+    )
 
-    return render(request,'articles/article_create.html')
+@login_required
+def article_edit(request, pk):
+    article = get_object_or_404(Article, id=pk, author=request.user)
 
+    if request.method == 'POST':
+        form = ArticleModelForm(request.POST, instance=article)
+        if form.is_valid():
+            form.save()
+            return redirect('article_list')
+
+    else:
+        form = ArticleModelForm(instance=article)
+
+    return render(request, 'articles/article_create.html', {'form': form, 'title': 'редактировать статью'})
+
+@login_required
+def article_delete(request, pk):
+    article = get_object_or_404(Article, id=pk, author=request.user)
+
+    if request.method == 'POST':
+        article.delete()
+        return redirect('article_list')
+
+    return render(
+        request,
+        'articles/article_confirm_delete.html',
+        {'article': article})

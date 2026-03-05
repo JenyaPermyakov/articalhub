@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <title>{% block title %}ArticleHub{% endblock %}</title>
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
+        <style>
+            body {
+                font-family: Georgia, "Times New Roman", serif;
+                background-color: #ffffff;
+            }
+
+            .navbar-brand {
+                font-weight: 700;
+                font-size: 30px;
+            }
+
+            .content {
+                max-width: 720px;
+            }
+        </style>
+    </head>
+    <body>
+        <nav class="navbar navbar-light border-bottom mb-4">
+            <div class="container content">
+                <a href="{% url 'article_list' %}" class="navbar-brand">ArticleHub</a>
+                <a class="btn btn-dark" href="{% url 'article_create' %}">
+                    Добавить статью
+                </a>
+                {% if user.is_authenticated %}
+                    Привет, {{ user.username }}
+
+                <form method="post" action="{% url 'logout' %}">
+                    {% csrf_token %}
+                    <button class="btn btn-dark" type="submit">
+                        Выйти
+                    </button>
+                </form>
+                {% else %}
+                    <a href="{% url "article_login" %}">
+                        Войти в систему
+                    </a>
+
+                       <a href="{% url "register" %}">
+                        Регистрация
+                    </a>
+
+                {% endif %}
+
+            </div>
+
+        </nav>
+        <main class="container content">
+            {% block content %}{% endblock %}
+        </main>
+    </body>
+</html>
+
+
+
+

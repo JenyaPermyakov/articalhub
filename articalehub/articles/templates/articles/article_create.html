@@ -1,26 +1,47 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>adding article</title>
-</head>
-<body>
+{% extends 'articles/base.html' %}
 
-    <form method="POST">
+{% block title %}{{ title }} | ArticleHub{% endblock %}
+
+{% block content %}
+    <h1>{{ title }}</h1>
+
+    {% if error %}
+        <div class="alert alert-danger">
+            {{ error }}
+        </div>
+    {% endif %}
+
+    <form method="post">
         {% csrf_token %}
-        <label>
-            Загаловок
-            <input type="text" name="title">
-        </label>
-        <br>
-        <label>
-            Текст статьи:
-            <textarea name="content"></textarea>
-        </label>
-        <br>
-        <br>
-        <button type="submit">send</button>
+    
+        {% for field in form %}
+            <div class="mb-3">
+                {% if field.name == 'is_published' %}
+                    <div class="form-check">
+                        {{ field }}
+                        <label class="form-check-label">{{ field.label }}</label>
+                    </div>
+                {% else %}
+                    <label class="form-label">{{ field.label }}</label>
+                    {{ field }}
+                {% endif %}
+                
+                {% if field.errors %}
+                    <div class="text-danger mt-1">
+                        {{ field.errors|striptags }}
+                    </div>
+                {% endif %}
+            </div>
+        {% endfor %}
+    
+        <button type="submit" class="btn btn-dark">
+            Опубликовать
+        </button>
+
+        <a href="{% url 'article_list' %}"></a>
+
     </form>
 
-</body>
-</html>
+
+{% endblock %}
+
