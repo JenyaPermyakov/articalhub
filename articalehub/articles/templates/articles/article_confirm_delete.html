@@ -5,11 +5,11 @@
 
     <p>Вы уверены, что хотите удалить статью {{ article.title }}?</p>
 
-    <form method="post">
+    <form method="post" class="d-flex gap-2 flex-wrap">
         {% csrf_token %}
 
-        <button class="btn btn-danger">Да, удалить</button>
-        <a href="{% url 'article_detail' article.id %}" class="btn btn-secondary">Нет</a>
+        <button class="btn btn-danger app-btn">Да, удалить</button>
+        <a href="{% url 'article_detail' article.id %}" class="btn btn-secondary app-btn">Нет</a>
 
     </form>
 

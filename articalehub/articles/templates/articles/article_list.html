@@ -6,7 +6,7 @@
     <h1>Последние статьи</h1>
 
     <form method="get" class="mb-4">
-        <input type="text" name="q" class="from-control" placeholder="поиск по заголовку" value="{{ query|default:'' }}">
+        <input type="text" name="q" class="form-control" placeholder="поиск по заголовку" value="{{ query|default:'' }}">
     </form>
 
     {% if articles %}
@@ -14,12 +14,25 @@
         {% for article in articles %}
             <div class="md-4 pb-4 border-bottom">
                 <h2 class="h4">{{ article.title }}</h2>
+                <p class="small text-muted mb-2">
+                    {{ article.author.username }} · {{ article.created_at|date:"d.m.Y H:i" }}
+                    {% if not article.is_published %}
+                        · Черновик
+                    {% endif %}
+                </p>
+                {% if article.categories.all %}
+                    <p class="mb-2">
+                        {% for category in article.categories.all %}
+                            <span class="badge text-bg-light border">{{ category.name }}</span>
+                        {% endfor %}
+                    </p>
+                {% endif %}
                 <p class="text-muted">
                     {{ article.content|truncatechars:150 }}
                 </p>
 
                 <a href="{% url 'article_detail' article.id %}" class="text-decoration-none">
-                    Читать больше...->
+                    Читать больше...
                 </a>
             </div>
         {% endfor %}
@@ -29,4 +42,3 @@
     {% endif %}
 
 {% endblock %}
-

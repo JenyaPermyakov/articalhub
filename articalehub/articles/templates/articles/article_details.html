@@ -3,12 +3,30 @@
 {% block title %}Статья - {{ article.id }}{% endblock %}
 
 {% block content %}
-    <h1>{{ article.title }}</h1><a href="{% url 'article_edit' article.pk %}">Редактировать</a>
-    <a href="{% url 'article_delete' article.pk %}">Удалить</a>
+    <h1>{{ article.title }}</h1>
+    <p class="text-muted">
+        {{ article.author.username }} · {{ article.created_at|date:"d.m.Y H:i" }}
+        {% if not article.is_published %}
+            · Черновик
+        {% endif %}
+    </p>
+    {% if article.categories.all %}
+        <p>
+            {% for category in article.categories.all %}
+                <span class="badge text-bg-light border">{{ category.name }}</span>
+            {% endfor %}
+        </p>
+    {% endif %}
+
+    {% if user == article.author %}
+        <div class="mb-3 d-flex gap-2 flex-wrap">
+            <a class="btn btn-outline-dark app-btn" href="{% url 'article_edit' article.pk %}">Редактировать</a>
+            <a class="btn btn-outline-danger app-btn" href="{% url 'article_delete' article.pk %}">Удалить</a>
+        </div>
+    {% endif %}
 
     <div class="fs-5 lh-lg">
         {{ article.content }}
     </div>
 
 {% endblock %}
-

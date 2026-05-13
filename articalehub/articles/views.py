@@ -1,12 +1,9 @@
-from idlelib import query
-
 from django.contrib.auth.decorators import login_required
+from django.db.models import Q
 from django.shortcuts import render, redirect, get_object_or_404
 
 from .forms import ArticleModelForm
-from .models import Author, Article
-
-from django.contrib.auth.models import User
+from .models import Article
 
 
 @login_required
@@ -32,15 +29,28 @@ def article_create(request):
 def article_list(request):
     query = request.GET.get('q')
 
-    articles = Article.objects.all()
+    articles = Article.objects.select_related('author').prefetch_related('categories')
+    if request.user.is_authenticated:
+        articles = articles.filter(Q(is_published=True) | Q(author=request.user))
+    else:
+        articles = articles.filter(is_published=True)
+
     if query:
         articles = articles.filter(title__icontains=query)
 
-    return render(request, 'articles/article_list.html', {'articles': articles})
+    articles = articles.order_by('-created_at')
+
+    return render(request, 'articles/article_list.html', {'articles': articles, 'query': query})
 
 
 def article_detail(request, pk):
-    article = get_object_or_404(Article, id=pk)
+    articles = Article.objects.select_related('author').prefetch_related('categories')
+    if request.user.is_authenticated:
+        articles = articles.filter(Q(is_published=True) | Q(author=request.user))
+    else:
+        articles = articles.filter(is_published=True)
+
+    article = get_object_or_404(articles, id=pk)
 
     return render(
         request,

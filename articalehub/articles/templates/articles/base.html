@@ -18,30 +18,49 @@
             .content {
                 max-width: 720px;
             }
+
+            .navbar .content {
+                flex-wrap: wrap;
+            }
+
+            .app-btn {
+                align-items: center;
+                display: inline-flex;
+                height: 40px;
+                justify-content: center;
+                max-width: 100%;
+                padding: 0 16px;
+                white-space: nowrap;
+                width: 190px;
+            }
+
+            .user-greeting {
+                white-space: nowrap;
+            }
         </style>
     </head>
     <body>
         <nav class="navbar navbar-light border-bottom mb-4">
-            <div class="container content">
+            <div class="container content d-flex align-items-center gap-3">
                 <a href="{% url 'article_list' %}" class="navbar-brand">ArticleHub</a>
-                <a class="btn btn-dark" href="{% url 'article_create' %}">
-                    Добавить статью
-                </a>
                 {% if user.is_authenticated %}
-                    Привет, {{ user.username }}
+                    <a class="btn btn-dark app-btn ms-auto" href="{% url 'article_create' %}">
+                        Добавить статью
+                    </a>
+                    <span class="user-greeting">Привет, {{ user.username }}</span>
 
-                <form method="post" action="{% url 'logout' %}">
-                    {% csrf_token %}
-                    <button class="btn btn-dark" type="submit">
-                        Выйти
-                    </button>
-                </form>
+                    <form method="post" action="{% url 'logout' %}">
+                        {% csrf_token %}
+                        <button class="btn btn-outline-dark app-btn" type="submit">
+                            Выйти
+                        </button>
+                    </form>
                 {% else %}
-                    <a href="{% url "article_login" %}">
+                    <a class="btn btn-outline-dark app-btn ms-auto" href="{% url "login" %}">
                         Войти в систему
                     </a>
 
-                       <a href="{% url "register" %}">
+                    <a class="btn btn-dark app-btn" href="{% url "register" %}">
                         Регистрация
                     </a>
 
@@ -55,7 +74,4 @@
         </main>
     </body>
 </html>
-
-
-
 

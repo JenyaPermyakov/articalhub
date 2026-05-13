@@ -34,14 +34,13 @@
             </div>
         {% endfor %}
     
-        <button type="submit" class="btn btn-dark">
+        <button type="submit" class="btn btn-dark app-btn">
             Опубликовать
         </button>
 
-        <a href="{% url 'article_list' %}"></a>
+        <a href="{% url 'article_list' %}" class="btn btn-outline-dark app-btn">Отмена</a>
 
     </form>
 
 
 {% endblock %}
-
